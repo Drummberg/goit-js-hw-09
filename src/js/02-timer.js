@@ -44,6 +44,23 @@ function onStartBtn() {
 }
   
 
+function updateTime() {
+  const currentTime = new Date()
+  const selectedTime = new Date(refs.input.value)
+
+  const deltaTime = selectedTime - currentTime
+
+  if (deltaTime < 0) {
+    return
+  } else {
+    const { days, hours, minutes, seconds } = convertMs(deltaTime)
+    refs.days.textContent = `${days}`
+    refs.hours.textContent = `${hours}`
+    refs.minutes.textContent = `${minutes}`
+    refs.seconds.textContent = `${seconds}`
+  }
+}
+
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
@@ -61,21 +78,4 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
-}
-
-function updateTime() {
-  const currentTime = new Date()
-  const selectedTime = new Date(refs.input.value)
-
-  const deltaTime = selectedTime - currentTime
-
-  if (deltaTime < 0) {
-    return
-  } else {
-    const { days, hours, minutes, seconds } = convertMs(deltaTime)
-    refs.days.textContent = `${days}`
-    refs.hours.textContent = `${hours}`
-    refs.minutes.textContent = `${minutes}`
-    refs.seconds.textContent = `${seconds}`
-  }
 }
