@@ -14,6 +14,7 @@ const refs = {
 
 refs.startBtn.disabled = true;
 
+let timeoutID = null;
 
 const options = {
   enableTime: true,
@@ -21,11 +22,27 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    if (selectedDates[0] <= options.defaultDate) {
+      Notiflix.Notify.failure('Please choose a date in the future')
+      refs.startBtn.disabled = true;
+    } else {
+      refs.startBtn.disabled = false;
+    }
   },
 };
 
+const currentDate = flatpickr(refs.input, options);
 
+refs.startBtn.addEventListener('click', onStartBtn);
+
+function onStartBtn() {
+  timeoutID = setInterval(() => {
+    updateTime()
+  }, 1000)
+  refs.input.disabled = true
+  refs.startBtn.disabled = true
+}
+  
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -46,3 +63,19 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
+function updateTime() {
+  const currentTime = new Date()
+  const selectedTime = new Date(refs.input.value)
+
+  const deltaTime = selectedTime - currentTime
+
+  if (deltaTime < 0) {
+    return
+  } else {
+    const { days, hours, minutes, seconds } = convertMs(deltaTime)
+    refs.days.textContent = `${days}`
+    refs.hours.textContent = `${hours}`
+    refs.minutes.textContent = `${minutes}`
+    refs.seconds.textContent = `${seconds}`
+  }
+}
